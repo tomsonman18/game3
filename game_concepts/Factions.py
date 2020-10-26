@@ -221,10 +221,10 @@ def instantiate_animations():
         - Knights have a start position
 
 """
-p1 = Knights(blue, name1, default_knight, tile_start[0])
-p2 = Knights(black, name2, default_knight, tile_start[1])
-p3 = Knights(red, name3, default_knight, tile_start[2])
-p4 = Knights(yellow, name4, default_knight, tile_start[3])
+p1 = Knights(blue, name1, default_knight, tile_start_players[0])
+p2 = Knights(black, name2, default_knight, tile_start_players[1])
+p3 = Knights(red, name3, default_knight, tile_start_players[2])
+p4 = Knights(yellow, name4, default_knight, tile_start_players[3])
 
 mob1 = Mob(tile_start_mob[0])
 

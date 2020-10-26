@@ -74,10 +74,15 @@ l_down = + row - column
 r_down = + row + column
 
 """characters"""
-tile_start = [row * 1 + 1, row * 2 + 1,
-              row * 3 + 1, row * 4 + 1]
 
-tile_start_mob = [row * 10 + row - 15]
+"""Starting position"""
+def tile_coor(x, y):
+    y1 = row * y
+    return y1 + x
+
+tile_start_players = [tile_coor(1,1), tile_coor(1,2), tile_coor(1,3), tile_coor(1,4)]
+tile_start_mob = [tile_coor(30, 10)]
+
 
 name1 = 'Mordred'
 name2 = 'Dagos'

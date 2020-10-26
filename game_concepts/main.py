@@ -1,7 +1,8 @@
 from game_concepts.Factions import *
 import pygame
 
-# current player needs to be set by the turns
+# current player eventually needs to be set by the turns in Gameflow
+# now you can just adjust it here
 current_player_turn.append(mob1)
 players = [p1, p2, p3, p4]
 
@@ -140,8 +141,6 @@ class Game:
                         self.counter += 1
                         self.last_space = []
                         self.cutoff = 140
-
-
                     self.spacebar = False
 
     def stop_motion(self):
