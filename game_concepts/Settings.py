@@ -1,6 +1,6 @@
 import os
 import pygame
-
+import random
 
 """colors"""
 black = (10, 6, 8)
@@ -15,6 +15,9 @@ FPS = 60
 screen_width = 1600
 screen_height = 800
 
+pygame.mixer.init()
+pygame.font.init()
+pygame.init()
 
 """dirs"""
 game_folder = os.path.dirname(__file__)
@@ -22,14 +25,20 @@ game_folder = os.path.dirname(__file__)
 img_folder = os.path.join(game_folder, 'images')
 terrain_folder = os.path.join(img_folder, 'Terrain')
 wall_folder = os.path.join(img_folder, 'Wall')
+map_folder = os.path.join(img_folder, 'map')
+boss_folder = os.path.join(img_folder, 'Boss')
+knight_folder = os.path.join(img_folder, 'Knight')
+backgrounds = os.path.join(img_folder, 'Backgrounds')
 ground_folder = os.path.join(terrain_folder, 'ground')
 trees_folder = os.path.join(terrain_folder, 'trees')
-map_folder = os.path.join(img_folder, 'map')
-knight_folder = os.path.join(img_folder, 'Knight')
+House_folder = os.path.join(terrain_folder, 'House')
+Castle_folder = os.path.join(terrain_folder, 'Castle')
+Well_folder = os.path.join(terrain_folder, 'Well')
+Cart_folder = os.path.join(terrain_folder, 'Cart')
+trees_05_folder = os.path.join(trees_folder, '_tree_05')
+trees_03_folder = os.path.join(trees_folder, '_tree_03')
 templar_folder = os.path.join(knight_folder, 'templar')
-
 animated_knight_folder = os.path.join(knight_folder, 'animated_knight')
-
 staying_motion_folder = os.path.join(animated_knight_folder, 'Staying')
 attacking_motion_folder = os.path.join(animated_knight_folder, 'Attacking')
 dying_motion_folder = os.path.join(animated_knight_folder, 'Dying')
@@ -65,14 +74,14 @@ l_down = + row - column
 r_down = + row + column
 
 """characters"""
-tile_start = [tiles_amount_width * 1 + 1, tiles_amount_width * 2 + 1,
-              tiles_amount_width * 3 + 1, tiles_amount_width * 4 + 1]
+tile_start = [row * 1 + 1, row * 2 + 1,
+              row * 3 + 1, row * 4 + 1]
 
-tile_start_mob = [tiles_amount_width * 1 + 5]
+tile_start_mob = [row * 10 + row - 15]
 
 name1 = 'Mordred'
 name2 = 'Dagos'
-name3 = 'Taryn'
+name3 = 'Tairyn'
 name4 = 'Germaine'
 
 moving_speed = 2
@@ -84,7 +93,6 @@ current_player_turn = []
 animation_walking_ongoing = [False]
 
 """images"""
-
 
 class Image:
 
@@ -108,7 +116,9 @@ red_knight = Image(templar_folder, 'templar_red', 'png').load_image()
 yellow_knight = Image(templar_folder, 'templar_yellow', 'png').load_image()
 default_knight = Image(animated_knight_folder, 'default_knight', 'png').load_image()
 clear_image = Image(animated_knight_folder, 'clear', 'png').load_image()
-
+boss_left = Image(boss_folder, 'boss2', 'png').load_image()
+boss_right = Image(boss_folder, 'boss1', 'png').load_image()
+sorcerer = Image(boss_folder, 'sorcerer', 'png').load_image()
 vert_wall_image = Image(wall_folder, 'vert', 'jpg').load_image()
 hor_wall_image = Image(wall_folder, 'hor', 'jpg').load_image()
 wall_image = Image(wall_folder, 'Wall_new', 'png').load_image()
@@ -116,6 +126,13 @@ Wall1 = Image(wall_folder, 'Wall1', 'png').load_image()
 Wall2 = Image(wall_folder, 'Wall2', 'png').load_image()
 Wall3 = Image(wall_folder, 'Wall3', 'png').load_image()
 Wall4 = Image(wall_folder, 'Wall4', 'png').load_image()
+Cart = Image(Cart_folder, 'cart_70000', 'png').load_image()
+House = Image(House_folder, 'rem_0002', 'png').load_image()
+Castle = Image(Castle_folder, 'Castle1', 'png', image_size1=tile_size*8, image_size2=tile_size*5).load_image()
+Tree5 = Image(trees_05_folder, '_tree_05_{}0000'.format(random.randrange(0, 8)), 'png').load_image()
+Tree3 = Image(trees_03_folder, '_tree_03_{}0000'.format(random.randrange(0, 8)), 'png').load_image()
+Well = Image(Well_folder, 'Well_40000', 'png').load_image()
+Hud = Image(backgrounds, 'HUD', 'png', image_size1=screen_width, image_size2=(screen_height/4)).load_image()
 
 
 # does this make it worse? that the sizes are a little off
@@ -172,3 +189,5 @@ create_all_sides(walking_motion_folder, 'Walking', ak_walking)
 if __name__ == '__main__':
     print(tiles_amount_height * tile_size)
     print(tiles_amount_width * tile_size)
+    print(tiles_amount_height)
+    print(tiles_amount_width)

@@ -94,7 +94,7 @@ class Mob(pygame.sprite.Sprite):
 
     def __init__(self, position):
         pygame.sprite.Sprite.__init__(self)
-        self.image = red_knight
+        self.image = boss_left
         self.color = red
         self.rect = self.image.get_rect()
         self.position = position
@@ -105,6 +105,9 @@ class Mob(pygame.sprite.Sprite):
 
     def get_color(self):
         return self.color
+
+    def set_image(self, new_image):
+        self.image = new_image
 
     def get_position(self):
         return self.position
