@@ -26,8 +26,10 @@ text1 = ['Now, this is a story all about how. My life got flipped-turned upside 
 
 
 
-cutscene1 = Cutscenes(text1, sorcerer, 1, 5)
+cutscene1 = Cutscenes(text1, sorcerer8bit, 1, 5)
 
+if __name__ == '__main__':
+    print(cutscene1.text)
 
 
 

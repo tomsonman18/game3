@@ -1,4 +1,5 @@
 from game_concepts.Factions import *
+from game_concepts.Cutscene import *
 import pygame
 
 # current player eventually needs to be set by the turns in Gameflow
@@ -35,12 +36,12 @@ class Game:
         # for text on hud
         self.counter = 1
         self.text_starter = [0]
-        self.game_active = False
         self.spacebar = False
         self.cutoff = 140
         self.last_space = []
         self.text = []
         self.playing = True
+        self.game_active = False
 
     # order of run cycle
     def run(self):
@@ -75,7 +76,6 @@ class Game:
         pass
 
     def load_map(self):
-
         # opens file and reads it
         with open(os.path.join(game_folder, 'mapfile.txt'), 'rt') as mp:
             for line in mp:
@@ -212,10 +212,12 @@ class Game:
     # draw
     def draw(self):
 
-        # self.screen.fill(background)
-        self.screen.blit(bg_map, self.camera.apply_rect(bg_map_rect))
+
         # game loop draw
         if self.game_active is True:
+
+            # self.screen.fill(background)
+            self.screen.blit(bg_map, self.camera.apply_rect(bg_map_rect))
 
             self.draw_opa_tile()
 
@@ -233,21 +235,21 @@ class Game:
         # to start the first screen
         elif self.game_active is False:
 
+            """ self.camera.apply_rect(pygame.Rect(0, 0, 0, 0) this part doesnt do shit"""
+            self.screen.blit(cutscene1.background, (0,0))
 
-            self.text = ['Now, this is a story all about how. My life got flipped-turned upside down. And I\'d like to '
-                    'take a minute Just sit right there I\'ll tell you how I became the the prince of a town called '
-                    'Bel-Air. In West Philadelphia born and raised On the playground is where I spent most of my days '
-                    'Chillin out maxin relaxin all cool And all shootin some b-ball outside of the school When a '
-                    'couple of guys who were up to no good Started making trouble in my neighborhood I got in one '
-                    'little fight and my mom got scared She said You\'re movin with your auntie and uncle in Bel Air']
+            # this needs to be changed so that any cutscene can be used
+            self.text = cutscene1.text
 
             # if the list is not empty then search for last space and makes that the cutoff point
             if not self.last_space:
 
-                # to find the last space in the sentence and add the loc it to a list
+                # to find the last space in the sentence and add the location to a list
                 self.last_space.append(self.text[0].rfind(' ', self.text_starter[0],
                                                           self.text_starter[0] + self.cutoff))
-
+                # if the length of the text is bigger than the starting point + where it cutsoff then
+                # make the cutoff point where the last space was found here above
+                # otherwise the cutoff point becomes the end of the length of the text
                 if len(self.text[0]) > (self.text_starter[0] + self.cutoff):
                     self.cutoff = self.last_space[0]
                 else:
@@ -275,6 +277,7 @@ class Game:
     def draw_text(self, font, size, text, x, y, color, hudwindow=False):
         my_font = pygame.font.SysFont(font, size)
         text_surface = my_font.render(text, False, color)
+        # if the hud needs to be displayed  call the draw_text with hudwindow=True
         if hudwindow is True:
             self.screen.blit(Hud, (0, int(screen_height - (screen_height / 4))))
             self.screen.blit(text_surface, (x, y))

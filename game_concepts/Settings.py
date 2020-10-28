@@ -48,7 +48,8 @@ walking_motion_folder = os.path.join(animated_knight_folder, 'Walking')
 tile = []
 obstacle = []
 
-# tiles amount width must be able to divide by tile_size and screen width and height
+# tiles amount width must be able to divide by tile_size and screen width and screen height
+# tile size is 80 x 80
 tile_size = 80
 half_tile_size = int(tile_size/2)
 visible_tiles_amount_width = int(screen_width / tile_size)
@@ -80,9 +81,9 @@ def tile_coor(x, y):
     y1 = row * y
     return y1 + x
 
+# with tile_coor you can just fill in x and y tile
 tile_start_players = [tile_coor(1,1), tile_coor(1,2), tile_coor(1,3), tile_coor(1,4)]
 tile_start_mob = [tile_coor(30, 10)]
-
 
 name1 = 'Mordred'
 name2 = 'Dagos'
@@ -121,9 +122,9 @@ red_knight = Image(templar_folder, 'templar_red', 'png').load_image()
 yellow_knight = Image(templar_folder, 'templar_yellow', 'png').load_image()
 default_knight = Image(animated_knight_folder, 'default_knight', 'png').load_image()
 clear_image = Image(animated_knight_folder, 'clear', 'png').load_image()
-boss_left = Image(boss_folder, 'boss2', 'png').load_image()
-boss_right = Image(boss_folder, 'boss1', 'png').load_image()
-sorcerer = Image(boss_folder, 'sorcerer', 'png').load_image()
+boss_left = Image(boss_folder, 'boss2_8bit', 'png').load_image()
+boss_right = Image(boss_folder, 'boss1_8bit', 'png').load_image()
+sorcerer8bit = Image(boss_folder, 'sorcerer8bit', 'png', image_size1=1600, image_size2=900).load_image()
 vert_wall_image = Image(wall_folder, 'vert', 'jpg').load_image()
 hor_wall_image = Image(wall_folder, 'hor', 'jpg').load_image()
 wall_image = Image(wall_folder, 'Wall_new', 'png').load_image()
