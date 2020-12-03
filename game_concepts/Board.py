@@ -10,6 +10,8 @@ class Camera:
         # width and height is the camera size
         self.width = width
         self.height = height
+        self.x = 0
+        self.y = 0
 
     def apply(self, entity):
         # this moves the sprites other than the target. the 0,0 in the self.camera in the init
@@ -27,10 +29,14 @@ class Camera:
         # the camera offset needs a min and a maximum:
         x = min(0, x)   # left
         y = min(0, y)   # top
-        x = max(-(tiles_amount_width - visible_tiles_amount_width)*tile_size, x)   # right
-        y = max(-(tiles_amount_height - visible_tiles_amount_height)*tile_size, y)   # bottom
+        self.x = max(-(tiles_amount_width - visible_tiles_amount_width)*tile_size, x)   # right
+        self.y = max(-(tiles_amount_height - visible_tiles_amount_height)*tile_size, y)   # bottom
         # the camera is set to have the x and y values and same width and height as before
-        self.camera = pygame.Rect(x, y, self.width, self.height)
+        self.camera = pygame.Rect(self.x, self.y, self.width, self.height)
+
+    # not used
+    def x_y(self):
+        return self.x, self.y
 
 
 class Obstacle(pygame.sprite.Sprite):

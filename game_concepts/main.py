@@ -1,11 +1,14 @@
-from game_concepts.Factions import *
-from game_concepts.Cutscene import *
+from game_concepts.Gameflow import *
+
+
 import pygame
 
 # current player eventually needs to be set by the turns in Gameflow
 # now you can just adjust it here
+
 current_player_turn.append(mob1)
-players = [p1, p2, p3, p4]
+#players = [p1, p2, p3, p4]
+players = [p1]
 
 
 class Game:
@@ -32,21 +35,25 @@ class Game:
         # loads the map file
         self.load_map()
         # for setup cutscene
-        self.text_cutscene = True
+        self.boss_setup_complete = True
         # for text on hud
         self.counter = 1
         self.text_starter = [0]
         self.spacebar = False
         self.cutoff = 140
         self.last_space = []
-        self.text = []
         self.playing = True
         self.game_active = False
+        # to see if key is up
+        self.key_up = True
+        #chapters
+        self.chapter1_complete = False
+
+        self.key_allowed = True
 
     # order of run cycle
     def run(self):
         # game loop
-
         while self.playing:
             # self.clock.tick(FPS)
             self.clock.tick()
@@ -58,11 +65,14 @@ class Game:
     def new(self):
         # start a new game
         instantiate_animations()
+        create_black_tile_lists()
         # groups all sprites together
         self.all_sprites.add(p1)
+        """
         self.all_sprites.add(p2)
         self.all_sprites.add(p3)
         self.all_sprites.add(p4)
+        """
         self.all_sprites.add(mob1)
 
         # this creates a camera
@@ -85,25 +95,17 @@ class Game:
         # creates objects and sets it to the obstacle group
         for y, y_tiles in enumerate(self.map_data):
             for x, x_tiles in enumerate(y_tiles):
-                if x_tiles == '1':
-                    # self.all_sprites.add(Obstacle(y, x, vert_wall_image))
-                    self.obstacles.add(Obstacle(x, y, wall_picture_vert))
-                elif x_tiles == '2':
-                    # self.all_sprites.add(Obstacle(y, x, hor_wall_image))
-                    self.obstacles.add(Obstacle(x, y, wall_picture_hor))
-                    # you could also add to all_sprites if wanted: self.all_sprites.add(Obstacle(y,x))
-                elif x_tiles == '3':
-                    self.obstacles.add(Obstacle(x, y, Tree3))
-                elif x_tiles == '5':
-                    self.obstacles.add(Obstacle(x, y, Tree5))
-                elif x_tiles == '6':
-                    self.obstacles.add(Obstacle(x, y, House))
-                elif x_tiles == '7':
-                    self.obstacles.add(Obstacle(x, y, Well))
-                elif x_tiles == '8':
-                    self.obstacles.add(Obstacle(x, y, Cart))
-                elif x_tiles == '9':
-                    self.obstacles.add(Obstacle(x, y, Castle))
+                if x_tiles == '1': self.obstacles.add(Obstacle(x, y, wall_picture_vert))
+                elif x_tiles == '2': self.obstacles.add(Obstacle(x, y, wall_picture_hor))
+                # you could also add to all_sprites if wanted: self.all_sprites.add(Obstacle(y,x))
+                elif x_tiles == '3': self.obstacles.add(Obstacle(x, y, Tree3))
+                elif x_tiles == '4': self.obstacles.add(Obstacle(x, y, Tree5))
+                elif x_tiles == '5': self.obstacles.add(Obstacle(x, y, House))
+                elif x_tiles == '6': self.obstacles.add(Obstacle(x, y, Well))
+                elif x_tiles == '7': self.obstacles.add(Obstacle(x, y, Cart))
+                elif x_tiles == '8': self.obstacles.add(Obstacle(x, y, Castle))
+                # elif x_tiles == '9':
+                    # self.obstacles.add(Obstacle(x, y, ))
 
         # saves all the obstacle tiles
         for o in self.obstacles:
@@ -119,50 +121,54 @@ class Game:
                 self.playing = False
                 # also the g.running loop needs to quit
                 self.running = False
-
-            # check for button pressed
-            if event.type == pygame.KEYDOWN and current_player_turn[0].moving is False:
+                # check for button pressed
+            if event.type == pygame.KEYDOWN and current_player_turn[0].moving is False and self.key_up is True:
+                self.key_up = False
                 # which key is to which direction
-                if event.key == pygame.K_KP8: Game.direction(self, up, animation_walking[1])
-                if event.key == pygame.K_KP2: Game.direction(self, down, animation_walking[6])
-                if event.key == pygame.K_KP4: Game.direction(self, left, animation_walking[3])
-                if event.key == pygame.K_KP6: Game.direction(self, right, animation_walking[4])
-                if event.key == pygame.K_KP7: Game.direction(self, l_up, animation_walking[0])
-                if event.key == pygame.K_KP9: Game.direction(self, r_up, animation_walking[2])
-                if event.key == pygame.K_KP1: Game.direction(self, l_down, animation_walking[5])
-                if event.key == pygame.K_KP3: Game.direction(self, r_down, animation_walking[7])
+                if event.key == pygame.K_KP8 and self.key_allowed is True: Game.direction(self, up, animation_walking[1], current_player_turn[0])
+                elif event.key == pygame.K_KP2 and self.key_allowed is True: Game.direction(self, down, animation_walking[6], current_player_turn[0])
+                elif event.key == pygame.K_KP4 and self.key_allowed is True: Game.direction(self, left, animation_walking[3], current_player_turn[0])
+                elif event.key == pygame.K_KP6 and self.key_allowed is True: Game.direction(self, right, animation_walking[4], current_player_turn[0])
+                elif event.key == pygame.K_KP7 and self.key_allowed is True: Game.direction(self, l_up, animation_walking[0], current_player_turn[0])
+                elif event.key == pygame.K_KP9 and self.key_allowed is True: Game.direction(self, r_up, animation_walking[2], current_player_turn[0])
+                elif event.key == pygame.K_KP1 and self.key_allowed is True: Game.direction(self, l_down, animation_walking[5], current_player_turn[0])
+                elif event.key == pygame.K_KP3 and self.key_allowed is True: Game.direction(self, r_down, animation_walking[7], current_player_turn[0])
 
-                if event.key == pygame.K_SPACE and self.spacebar is True:
-                    if self.counter == len(self.text[0]):
+                elif event.key == pygame.K_SPACE and self.spacebar is True:
+                    if self.counter == len(cutscenes[0].text[0]):
                         self.game_active = True
-                        self.text_cutscene = False
+                        self.boss_setup_complete = False
+                        self.counter = 1
+                        self.text_starter = [0]
+                        self.last_space = []
+                        self.cutoff = 140
                     elif self.counter % self.cutoff == 0:
                         self.text_starter[0] = self.cutoff
                         self.counter += 1
                         self.last_space = []
                         self.cutoff = 140
                     self.spacebar = False
+            elif event.type == pygame.KEYUP:
+                self.key_up = True
+
 
     def stop_motion(self):
         # to stop the walking motion from being infinite
         if animation_walking_ongoing[0] is not False and current_player_turn[0].moving is False:
-            self.all_sprites.remove(animation_walking_ongoing[0])
-            animation_walking_ongoing[0] = False
-            current_player_turn[0].set_image(default_knight)
+            if animation_walking_ongoing[0].side == 'left' or animation_walking_ongoing[0].side == 'l_up' \
+                    or animation_walking_ongoing[0].side == 'l_down':
+                self.all_sprites.remove(animation_walking_ongoing[0])
+                animation_walking_ongoing[0] = False
+                current_player_turn[0].set_image(default_l_knight)
+                current_player_turn[0].step_count += 1
+            else:
+                self.all_sprites.remove(animation_walking_ongoing[0])
+                animation_walking_ongoing[0] = False
+                current_player_turn[0].set_image(default_knight)
+                current_player_turn[0].step_count += 1
 
-    # update
-    def update(self):
-        # game loop update
+    def direction(self, where, animation, who):
 
-        # all the sprites update at once
-        self.all_sprites.update()
-        self.camera.update(current_player_turn[0])
-
-        """This stops the animation for the characters, change here if you want the mob to also show an animation"""
-        if current_player_turn[0] in players:
-            self.stop_motion()
-
-    def direction(self, where, animation, who=current_player_turn[0]):
         player_position = who.get_position()
         new_player_position = player_position + where
 
@@ -199,19 +205,41 @@ class Game:
                 self.all_sprites.add(animation)
                 animation_walking_ongoing[0] = animation
 
-    def setup(self):
+    # update
+    def update(self):
+        # game loop update
 
-        # starting the game moving mob to right
-        if self.text_cutscene is False and mob1.position % tiles_amount_width != tiles_amount_width - 2:
-            mob1.set_image(boss_right)
-            Game.direction(self, right, animation_walking[4])
-        elif self.text_cutscene is False and mob1.position % tiles_amount_width == tiles_amount_width - 2:
-            mob1.set_image(boss_left)
-            self.text_cutscene = True
+        # all the sprites update at once
+        self.all_sprites.update()
+        self.camera.update(current_player_turn[0])
+
+        """This stops the animation for the characters, change here if you want the mob to also show an animation"""
+        if current_player_turn[0] in players:
+            self.stop_motion()
+
+    def setup(self):
+        # in Gameflow
+        if self.chapter1_complete is False:
+            chapter1(self, Game)
+
+
+
+        # need to fix this
+        if turn_enemy_spawn and current_player_turn[0].step_count == turn_enemy_spawn[0]:
+            self.key_allowed = False
+            print('1', battle_cutscene1.active)
+            battle_cutscene1.fade_on()
+            print('2', battle_cutscene1.active)
+            if battle_cutscene1.active is False:
+                self.game_active = False
+                del turn_enemy_spawn[0]
+                self.key_allowed = True
+
+        #if soldier_battle() is True:
+            #self.game_active = False
 
     # draw
     def draw(self):
-
 
         # game loop draw
         if self.game_active is True:
@@ -232,40 +260,40 @@ class Game:
                 # apply(sprite) does rect.move(self.camera.topleft) in the opposite of where the camera moves
                 self.screen.blit(sprite.image, self.camera.apply(sprite))
 
+            # starts fade - needs to be changed to any fade instead of this one maybe with like current_fade[0]
+            if cutscenes[0].fade is True:
+                cutscenes[0].fade_start(self.screen)
+
         # to start the first screen
         elif self.game_active is False:
 
-            """ self.camera.apply_rect(pygame.Rect(0, 0, 0, 0) this part doesnt do shit"""
-            self.screen.blit(cutscene1.background, (0,0))
-
-            # this needs to be changed so that any cutscene can be used
-            self.text = cutscene1.text
+            self.screen.blit(cutscenes[0].background, (0,0))
 
             # if the list is not empty then search for last space and makes that the cutoff point
             if not self.last_space:
 
                 # to find the last space in the sentence and add the location to a list
-                self.last_space.append(self.text[0].rfind(' ', self.text_starter[0],
+                self.last_space.append(cutscenes[0].text[0].rfind(' ', self.text_starter[0],
                                                           self.text_starter[0] + self.cutoff))
                 # if the length of the text is bigger than the starting point + where it cutsoff then
                 # make the cutoff point where the last space was found here above
                 # otherwise the cutoff point becomes the end of the length of the text
-                if len(self.text[0]) > (self.text_starter[0] + self.cutoff):
+                if len(cutscenes[0].text[0]) > (self.text_starter[0] + self.cutoff):
                     self.cutoff = self.last_space[0]
                 else:
-                    self.cutoff = len(self.text[0])
+                    self.cutoff = len(cutscenes[0].text[0])
 
             # to draw the message with hud
-            self.draw_text('Zilla Slab', 30, self.text[0][self.text_starter[0]:self.counter], 100,
+            self.draw_text('Zilla Slab', 30, cutscenes[0].text[0][self.text_starter[0]:self.counter], 100,
                            int(screen_height - (screen_height / 7)),
                            yellow, hudwindow=True)
 
             # to start the counter for the text
-            if self.counter < len(self.text[0]) and self.counter % self.cutoff != 0:
+            if self.counter < len(cutscenes[0].text[0]) and self.counter % self.cutoff != 0:
                 self.counter += 1
 
             # to cut it off at cutoff point and show spacebar text
-            if self.counter <= len(self.text[0]) and self.counter % self.cutoff == 0:
+            if self.counter <= len(cutscenes[0].text[0]) and self.counter % self.cutoff == 0:
                 self.draw_text('Zilla Slab', 30, 'Press space to continue', 660,
                                int(screen_height - (screen_height / 16)),
                                yellow)

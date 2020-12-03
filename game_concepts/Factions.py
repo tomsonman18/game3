@@ -18,6 +18,7 @@ class Knights(pygame.sprite.Sprite):
         self.position = position
         self.new_position = position
         self.moving = False
+        self.step_count = 0
 
     def set_image(self, new_image):
         self.image = new_image
@@ -43,7 +44,7 @@ class Knights(pygame.sprite.Sprite):
             # now starts the movement
             self.moving = True
             self.set_image(clear_image)
-            # if x is True than horizontal movement
+            # if x is True then horizontal movement
             if x:
                 if xplus:
                     self.rect.x += moving_speed
@@ -89,6 +90,35 @@ class Knights(pygame.sprite.Sprite):
         self.moving_logic()
 
 
+class Soldier:
+
+    def __init__(self, rank, strength, weakness, image):
+        # rank 1 / 2 / 3
+        self.rank = rank
+        self.strength = strength
+        self.weakness = weakness
+        self.image = image
+        self.hp = 100
+        self.attack_damage = 10 + (self.rank * 5)
+
+    def take_damage(self, damage):
+        self.hp -= damage
+
+    def reset_health(self):
+        self.hp = 100
+
+
+soldier_1 = Soldier(1, 'armor', 'sword', yellow_knight)
+soldier_2 = Soldier(1, 'shield', 'armor', yellow_knight)
+soldier_3 = Soldier(1, 'sword', 'shield', yellow_knight)
+
+soldier_4 = Soldier(2, 'armor', 'sword', red_knight)
+soldier_5 = Soldier(2, 'shield', 'armor', red_knight)
+soldier_6 = Soldier(2, 'sword', 'shield', red_knight)
+
+soldier_7 = Soldier(3, 'armor', 'sword', black_knight)
+soldier_8 = Soldier(3, 'shield', 'armor', black_knight)
+soldier_9 = Soldier(3, 'sword', 'shield', black_knight)
 
 class Mob(pygame.sprite.Sprite):
 
@@ -102,6 +132,7 @@ class Mob(pygame.sprite.Sprite):
         self.moving = False
         self.rect.center = (tile[position].get_coordinates()[0] + half_tile_size,
                             tile[position].get_coordinates()[1] + half_tile_size)
+        self.step_count = 0
 
     def get_color(self):
         return self.color
@@ -195,6 +226,7 @@ class Animation(pygame.sprite.Sprite):
                 self.rect.center = center
 
 
+
 # instead of making each var with side the fill_motion_lists makes a list for all animations with numbers
 # example:
 # animation_walking_r = Animation(current_player_turn[0].rect.center, 'right', ak_walking)
@@ -212,6 +244,7 @@ def instantiate_animations():
     fill_motion_lists(animation_attacking, ak_attacking)
 
 
+
 """
     |   Instantiation of Knight objects   |
 
@@ -219,12 +252,15 @@ def instantiate_animations():
         - Knights have a name
         - Knights have an image
         - Knights have a start position
+"""
+
+p1 = Knights(red, name1, default_knight, tile_start_players[0])
 
 """
-p1 = Knights(blue, name1, default_knight, tile_start_players[0])
-p2 = Knights(black, name2, default_knight, tile_start_players[1])
-p3 = Knights(red, name3, default_knight, tile_start_players[2])
-p4 = Knights(yellow, name4, default_knight, tile_start_players[3])
+p2 = Knights(yellow, name2, default_knight, tile_start_players[1])
+p3 = Knights(blue, name3, default_knight, tile_start_players[2])
+p4 = Knights(black, name4, default_knight, tile_start_players[3])
+"""
 
 mob1 = Mob(tile_start_mob[0])
 

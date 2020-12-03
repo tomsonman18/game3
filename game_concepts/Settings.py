@@ -82,7 +82,7 @@ def tile_coor(x, y):
     return y1 + x
 
 # with tile_coor you can just fill in x and y tile
-tile_start_players = [tile_coor(1,1), tile_coor(1,2), tile_coor(1,3), tile_coor(1,4)]
+tile_start_players = [tile_coor(1,12), tile_coor(1,2), tile_coor(1,3), tile_coor(1,4)]
 tile_start_mob = [tile_coor(30, 10)]
 
 name1 = 'Mordred'
@@ -94,6 +94,7 @@ moving_speed = 2
 animation_frame_rate = 15
 
 current_player_turn = []
+
 
 # to stop the walking motion:
 animation_walking_ongoing = [False]
@@ -121,10 +122,11 @@ black_knight = Image(templar_folder, 'templar_black', 'png').load_image()
 red_knight = Image(templar_folder, 'templar_red', 'png').load_image()
 yellow_knight = Image(templar_folder, 'templar_yellow', 'png').load_image()
 default_knight = Image(animated_knight_folder, 'default_knight', 'png').load_image()
+default_l_knight = Image(animated_knight_folder, 'default_l_knight', 'png').load_image()
 clear_image = Image(animated_knight_folder, 'clear', 'png').load_image()
 boss_left = Image(boss_folder, 'boss2_8bit', 'png').load_image()
 boss_right = Image(boss_folder, 'boss1_8bit', 'png').load_image()
-sorcerer8bit = Image(boss_folder, 'sorcerer8bit', 'png', image_size1=1600, image_size2=900).load_image()
+sorcerer8bit = Image(boss_folder, 'sorcererfull', 'png', image_size1=1600, image_size2=900).load_image()
 vert_wall_image = Image(wall_folder, 'vert', 'jpg').load_image()
 hor_wall_image = Image(wall_folder, 'hor', 'jpg').load_image()
 wall_image = Image(wall_folder, 'Wall_new', 'png').load_image()
@@ -134,11 +136,12 @@ Wall3 = Image(wall_folder, 'Wall3', 'png').load_image()
 Wall4 = Image(wall_folder, 'Wall4', 'png').load_image()
 Cart = Image(Cart_folder, 'cart_70000', 'png').load_image()
 House = Image(House_folder, 'rem_0002', 'png').load_image()
-Castle = Image(Castle_folder, 'Castle1', 'png', image_size1=tile_size*8, image_size2=tile_size*5).load_image()
+Castle = Image(Castle_folder, 'Castle1', 'png').load_image()
 Tree5 = Image(trees_05_folder, '_tree_05_{}0000'.format(random.randrange(0, 8)), 'png').load_image()
 Tree3 = Image(trees_03_folder, '_tree_03_{}0000'.format(random.randrange(0, 8)), 'png').load_image()
 Well = Image(Well_folder, 'Well_40000', 'png').load_image()
 Hud = Image(backgrounds, 'HUD', 'png', image_size1=screen_width, image_size2=(screen_height/4)).load_image()
+battle = Image(backgrounds, 'battle', 'jpg', image_size1=screen_width, image_size2=screen_height).load_image()
 
 
 # does this make it worse? that the sizes are a little off
@@ -192,8 +195,19 @@ create_all_sides(attacking_motion_folder, 'Attacking', ak_attacking)
 create_all_sides(dying_motion_folder, 'Dying', ak_dying)
 create_all_sides(walking_motion_folder, 'Walking', ak_walking)
 
+turn_enemy_spawn = []
+
+for turn in range(20, 300, 15):
+    r = turn + random.randrange(5,10)
+    turn_enemy_spawn.append(r)
+
+for _ in range(0,10):
+    delete = turn_enemy_spawn[random.randrange(1,len(turn_enemy_spawn))]
+    turn_enemy_spawn.remove(delete)
+
+print(turn_enemy_spawn)
+
 if __name__ == '__main__':
-    print(tiles_amount_height * tile_size)
-    print(tiles_amount_width * tile_size)
-    print(tiles_amount_height)
-    print(tiles_amount_width)
+
+    print(len(turn_enemy_spawn))
+    print(turn_enemy_spawn)
